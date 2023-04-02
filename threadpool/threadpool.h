@@ -43,12 +43,12 @@ threadpool<T>::threadpool( int actor_model, connection_pool *connPool, int threa
         throw std::exception();
     for (int i = 0; i < thread_number; ++i)
     {
-        if (pthread_create(m_threads + i, NULL, worker, this) != 0)
+        if (pthread_create(m_threads + i, NULL, worker, this) != 0)//pthread_create创建线程，正确返回0，参数1为存储新线程ID，参数2位调控线程的结构体，参数3是新线程起始函数
         {
             delete[] m_threads;
             throw std::exception();
         }
-        if (pthread_detach(m_threads[i]))
+        if (pthread_detach(m_threads[i]))// pthread_detach让线程运行完自动释放资源，函数运行正确返回值为0，如果不是0，就表示错误
         {
             delete[] m_threads;
             throw std::exception();
@@ -76,7 +76,7 @@ bool threadpool<T>::append(T *request, int state)
     return true;
 }
 template <typename T>
-bool threadpool<T>::append_p(T *request)
+bool threadpool<T>::append_p(T *request)//这两个函数区别在哪呢
 {
     m_queuelocker.lock();
     if (m_workqueue.size() >= m_max_requests)

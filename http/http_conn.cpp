@@ -50,6 +50,7 @@ void http_conn::initmysql_result(connection_pool *connPool)
 //对文件描述符设置非阻塞
 int setnonblocking(int fd)
 {
+    // return fcntl(fd,F_SETFL,fcntl(fd,F_GETFL)|O_NONBLOCK);
     int old_option = fcntl(fd, F_GETFL);
     int new_option = old_option | O_NONBLOCK;
     fcntl(fd, F_SETFL, new_option);
@@ -203,7 +204,7 @@ bool http_conn::read_once()
     }
     int bytes_read = 0;
 
-    //LT读取数据
+    //LT读取数据, 因为LT模式下socket会一直通知可读时间，因此不需要循环
     if (0 == m_TRIGMode)
     {
         bytes_read = recv(m_sockfd, m_read_buf + m_read_idx, READ_BUFFER_SIZE - m_read_idx, 0);
@@ -216,7 +217,7 @@ bool http_conn::read_once()
 
         return true;
     }
-    //ET读数据
+    //ET读数据，ET模式下socket只在缓冲区有事件可读时候通知一次，因此要循环读取缓冲区，知道缓冲区被读完
     else
     {
         while (true)

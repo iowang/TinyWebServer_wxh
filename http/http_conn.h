@@ -29,10 +29,10 @@
 class http_conn
 {
 public:
-    static const int FILENAME_LEN = 200;
-    static const int READ_BUFFER_SIZE = 2048;
-    static const int WRITE_BUFFER_SIZE = 1024;
-    enum METHOD
+    static const int FILENAME_LEN = 200;//文件名长
+    static const int READ_BUFFER_SIZE = 2048;//读缓冲区大小
+    static const int WRITE_BUFFER_SIZE = 1024;//写缓冲区大小
+    enum METHOD//http的方式
     {
         GET = 0,
         POST,
