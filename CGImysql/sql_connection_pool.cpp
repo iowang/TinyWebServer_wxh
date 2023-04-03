@@ -50,9 +50,9 @@ void connection_pool::init(string url, string User, string PassWord, string DBNa
 			exit(1);
 		}
 		connList.push_back(con);
-		++m_FreeConn;
+		++m_FreeConn;//这边只是创建了连接池可是还没有使用所以连接池创建完成后可使用的连接就为最大连接
 	}
-
+	// sem 是定义信号量，这样正好可以有reserve个信号量
 	reserve = sem(m_FreeConn);
 
 	m_MaxConn = m_FreeConn;

@@ -101,6 +101,11 @@ void threadpool<T>::run()
 {
     while (true)
     {
+        //这里即使用了信号量又使用了互斥锁，是为了防止在有信号量资源时，出现多个线程访问请求队列的问题。
+        
+        /*需要注意的是，在m_queuestat.wait()处，使用了信号量的wait()方法，当该线程重新获得信号量资源时，
+        不会再次进行-1操作，因为信号量对象记录了该线程已经获得了一个资源，下一次wait()操作将会等待其他线程释放资源。
+        因此，即使线程重新执行m_queuestat.wait()，也不会对信号量进行重复操作。*/
         m_queuestat.wait();
         m_queuelocker.lock();
         if (m_workqueue.empty())
